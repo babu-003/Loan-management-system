@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-p)-s=o^-g+4rp@btvvdd4j3dl&z5n+b7wt)-(mt)tug6&4wl=i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['loan-management-system-t27i.onrender.com','localhost', '127.0.0.1']
 
 
 # Application definition
