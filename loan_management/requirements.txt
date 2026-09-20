@@ -1,0 +1,4 @@
+Django==6.1.1
+django-formtools==2.7
+xhtml2pdf
+gunicorn
