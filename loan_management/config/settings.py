@@ -131,6 +131,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Enable WhiteNoise storage compression
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Media (uploaded customer photos + KYC documents) — stored locally, per
 # the project's offline requirement. Not under Program Files-equivalent
 # app code so it survives application upgrades.
