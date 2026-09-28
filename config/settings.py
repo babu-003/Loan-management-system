@@ -59,6 +59,7 @@ MIDDLEWARE = [
     'accounts.middleware.SessionTimeoutMiddleware',
     'core.middleware.CurrentUserMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
