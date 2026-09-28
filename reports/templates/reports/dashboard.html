@@ -61,7 +61,7 @@
   </div>
   <div class="stat-card">
     <div class="stat-label">Total Invested (Pool Balance)</div>
-    <div class="stat-value">₹{{ total_invested }}</div>
+    <div class="stat-value {% if total_invested < 0 %}negative{% endif %}">₹{{ total_invested }}</div>
   </div>
 </div>
 {% endblock %}

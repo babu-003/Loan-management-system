@@ -20,8 +20,10 @@ class LoanForm(forms.ModelForm):
             "purpose", "remarks",
         ]
         widgets = {
-            "start_date": forms.DateInput(attrs={"type": "date"}),
-            "first_due_date": forms.DateInput(attrs={"type": "date"}),
+            "start_date": forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31"}),
+            "first_due_date": forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31"}),
             "remarks": forms.Textarea(attrs={"rows": 2}),
         }
 
@@ -54,7 +56,8 @@ class InstallmentDueDateForm(forms.ModelForm):
     class Meta:
         model = Installment
         fields = ["due_date"]
-        widgets = {"due_date": forms.DateInput(attrs={"type": "date"})}
+        widgets = {"due_date": forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31"})}
 
 
 class LoanCalculatorForm(forms.Form):
@@ -66,7 +69,7 @@ class LoanCalculatorForm(forms.Form):
     custom_interval_days = forms.IntegerField(required=False, min_value=1)
     number_of_installments = forms.IntegerField(min_value=1)
     first_due_date = forms.DateField(
-        required=False, widget=forms.DateInput(attrs={"type": "date"}),
+        required=False, widget=forms.DateInput(attrs={"type": "date",}),
         help_text="Optional — only used to project real due dates in the schedule preview.",
     )
 

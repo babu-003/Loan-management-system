@@ -46,6 +46,10 @@ class PersonalDetailsForm(forms.ModelForm):
             "monthly_income",
             "father_husband_name",
         ]
+        labels = {
+        "father_husband_name": "Father/Husband Name",
+    }
+
         widgets = {
             "date_of_birth": forms.DateInput(attrs={"type": "date"}),
         }
@@ -240,9 +244,11 @@ class CustomerSearchForm(forms.Form):
         choices=[("", "All statuses")] + list(Customer.STATUS_CHOICES),
     )
     created_from = forms.DateField(
-        required=False, widget=forms.DateInput(attrs={"type": "date"})
+        required=False, widget=forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31",})
     )
     created_to = forms.DateField(
-        required=False, widget=forms.DateInput(attrs={"type": "date"})
+        required=False, widget=forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31",})
     )
     location = forms.CharField(required=False)
