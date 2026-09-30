@@ -20,6 +20,12 @@
 
 {% if active_tab == 'overview' %}
   <div class="card">
+  <div class="form-grid">
+    <div><strong>Default Staff:</strong> {% if customer.default_staff %}<a href="{% url 'staff:detail' customer.default_staff.pk %}">{{ customer.default_staff.full_name }}</a>{% else %}<span class="muted">Not assigned</span>{% endif %}</div>
+  </div>
+</div>
+
+<div class="card">
     <h3>Summary</h3>
     <p><strong>Active Loans:</strong> {{ active_loan_count }} &nbsp; <strong>Total Outstanding:</strong> ₹{{ total_outstanding_amount }}</p>
     <p><strong>Occupation:</strong> {{ customer.occupation }} &nbsp; <strong>Monthly Income:</strong> ₹{{ customer.monthly_income }}</p>

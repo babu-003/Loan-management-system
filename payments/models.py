@@ -23,6 +23,13 @@ class PaymentIDCounter(models.Model):
 
 
 class Payment(models.Model):
+    PAYMENT_MODE_CASH = "cash"
+    PAYMENT_MODE_ONLINE = "online"
+    PAYMENT_MODE_CHOICES = [
+        (PAYMENT_MODE_CASH, "Cash"),
+        (PAYMENT_MODE_ONLINE, "Online"),
+    ]
+
     """One receipt. amount_paid is whatever is CURRENTLY correct — if
     edited, previous_amount/edited_at record what it was before, per your
     choice to keep the prior value visible rather than a full history."""
@@ -30,6 +37,12 @@ class Payment(models.Model):
     receipt_number = models.CharField(max_length=20, unique=True, editable=False)
     loan = models.ForeignKey(Loan, on_delete=models.PROTECT, related_name="payments")
     payment_date = models.DateField()
+    payment_mode = models.CharField(
+        max_length=10,
+        choices=PAYMENT_MODE_CHOICES,
+        default=PAYMENT_MODE_CASH,
+    )
+    transaction_id = models.CharField(max_length=100, blank=True)
     amount_paid = models.DecimalField(max_digits=12, decimal_places=2)
     previous_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     edited_at = models.DateTimeField(null=True, blank=True)

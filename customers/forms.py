@@ -4,6 +4,7 @@ from django.forms import formset_factory
 from documents.models import DocumentType
 
 from .models import Customer, CustomerBankDetail
+from staff.models import Staff
 
 
 class PersonalDetailsForm(forms.ModelForm):
@@ -45,6 +46,8 @@ class PersonalDetailsForm(forms.ModelForm):
             "occupation",
             "monthly_income",
             "father_husband_name",
+            "status",
+            "default_staff",
         ]
         labels = {
         "father_husband_name": "Father/Husband Name",
@@ -62,6 +65,12 @@ class PersonalDetailsForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             if field_name not in optional_fields and field_name != "customer_category":
                 field.required = True
+        self.fields["default_staff"].queryset = Staff.objects.filter(
+            status=Staff.STATUS_ACTIVE
+        ).order_by("full_name")
+        self.fields["default_staff"].required = False
+        self.fields["default_staff"].label = "Default Staff (Optional)"
+        self.fields["default_staff"].help_text = "You can assign or change the staff member later from the loan."
 
 
 class AddressForm(forms.ModelForm):

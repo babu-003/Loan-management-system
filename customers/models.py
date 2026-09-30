@@ -103,6 +103,11 @@ class Customer(models.Model):
 
     # --- Status / bookkeeping -------------------------------------------
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_ACTIVE)
+    default_staff = models.ForeignKey(
+        "staff.Staff", on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="default_customers",
+        help_text="Optional staff member to use as the default when this customer gets a new loan.",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'reports',
     'investments',
     'public',
+    'staff',
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'data' / 'media'
 
 LOGIN_URL = 'accounts:login'
-LOGIN_REDIRECT_URL = 'customers:list'
+LOGIN_REDIRECT_URL = 'reports:dashboard'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
 AUTH_USER_MODEL = 'accounts.AdminUser'

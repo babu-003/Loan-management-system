@@ -8,9 +8,11 @@ from .models import Payment
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
-        fields = ["loan", "payment_date", "amount_paid", "remarks"]
+        fields = ["loan", "payment_date", "payment_mode", "transaction_id", "amount_paid", "remarks"]
         widgets = {
             "payment_date": forms.DateInput(attrs={"type": "date"}),
+            "payment_mode": forms.Select(),
+            "transaction_id": forms.TextInput(attrs={"placeholder": "Enter transaction ID"}),
             "remarks": forms.Textarea(attrs={"rows": 2}),
         }
 
@@ -18,6 +20,22 @@ class PaymentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["loan"].queryset = Loan.objects.filter(status=Loan.STATUS_ACTIVE)
         self.fields["remarks"].required = False
+
+    def clean_payment_mode(self):
+        return self.cleaned_data.get("payment_mode") or Payment.PAYMENT_MODE_CASH
+
+    def clean_transaction_id(self):
+        return self.cleaned_data.get("transaction_id", "").strip()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        mode = cleaned_data.get("payment_mode")
+        transaction_id = cleaned_data.get("transaction_id")
+        if mode == Payment.PAYMENT_MODE_ONLINE and not transaction_id:
+            self.add_error("transaction_id", "Transaction ID is required for online payments.")
+        if mode == Payment.PAYMENT_MODE_CASH:
+            cleaned_data["transaction_id"] = ""
+        return cleaned_data
 
     def clean_amount_paid(self):
         amount = self.cleaned_data["amount_paid"]
@@ -29,11 +47,29 @@ class PaymentForm(forms.ModelForm):
 class PaymentEditForm(forms.ModelForm):
     class Meta:
         model = Payment
-        fields = ["payment_date", "amount_paid", "remarks"]
+        fields = ["payment_date", "payment_mode", "transaction_id", "amount_paid", "remarks"]
         widgets = {
             "payment_date": forms.DateInput(attrs={"type": "date"}),
+            "payment_mode": forms.Select(),
+            "transaction_id": forms.TextInput(attrs={"placeholder": "Enter transaction ID"}),
             "remarks": forms.Textarea(attrs={"rows": 2}),
         }
+
+    def clean_payment_mode(self):
+        return self.cleaned_data.get("payment_mode") or Payment.PAYMENT_MODE_CASH
+
+    def clean_transaction_id(self):
+        return self.cleaned_data.get("transaction_id", "").strip()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        mode = cleaned_data.get("payment_mode")
+        transaction_id = cleaned_data.get("transaction_id")
+        if mode == Payment.PAYMENT_MODE_ONLINE and not transaction_id:
+            self.add_error("transaction_id", "Transaction ID is required for online payments.")
+        if mode == Payment.PAYMENT_MODE_CASH:
+            cleaned_data["transaction_id"] = ""
+        return cleaned_data
 
     def clean_amount_paid(self):
         amount = self.cleaned_data["amount_paid"]

@@ -15,6 +15,23 @@
 </div>
 
 <div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;">
+    <div>
+      <h3 style="margin-bottom:4px;">Collection Staff</h3>
+      <div class="muted">{% if loan.assigned_staff %}{{ loan.assigned_staff.full_name }} ({{ loan.assigned_staff.employee_id }}){% else %}No staff assigned{% endif %}</div>
+    </div>
+    <form method="post" action="{% url 'staff:assign_loan' loan.pk %}" style="display:flex;gap:8px;align-items:end;">
+      {% csrf_token %}
+      <div class="form-group" style="margin:0;min-width:230px;">
+        <label>Assign / Reassign Staff</label>
+        {{ assignment_form.staff }}
+      </div>
+      <button type="submit" class="btn">Save Assignment</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
   <div class="form-grid">
     <div><strong>Principal:</strong> ₹{{ loan.principal_amount }}</div>
     <div><strong>Interest Rate:</strong> {{ loan.interest_rate }}% p.a. ({{ loan.interest_type.name }})</div>

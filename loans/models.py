@@ -168,6 +168,10 @@ class Loan(models.Model):
     customer = models.ForeignKey(
         "customers.Customer", on_delete=models.PROTECT, related_name="loans"
     )
+    assigned_staff = models.ForeignKey(
+        "staff.Staff", on_delete=models.SET_NULL, null=True, blank=True, related_name="loans",
+        help_text="Staff member responsible for collecting this loan.",
+    )
     loan_group = models.ForeignKey(
         LoanGroup, on_delete=models.SET_NULL, null=True, blank=True, related_name="loans"
     )

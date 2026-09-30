@@ -7,13 +7,14 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .forms import InstallmentDueDateForm, LoanForm, LoanGroupForm, LoanSearchForm
+from staff.forms import StaffAssignmentForm
 from .models import Installment, Loan, LoanGroup
 
 
 @login_required
 def loan_list(request):
     search_form = LoanSearchForm(request.GET or None)
-    loans = Loan.objects.select_related("customer", "loan_type", "loan_group")
+    loans = Loan.objects.select_related("customer", "loan_type", "loan_group", "assigned_staff")
 
     if search_form.is_valid():
         query = search_form.cleaned_data.get("q")
@@ -45,6 +46,10 @@ def loan_create(request):
         initial["loan_group"] = group_id
     if customer_id:
         initial["customer"] = customer_id
+        from customers.models import Customer
+        customer = Customer.objects.filter(pk=customer_id).first()
+        if customer and customer.default_staff_id:
+            initial["assigned_staff"] = customer.default_staff_id
 
     if request.method == "POST":
         form = LoanForm(request.POST)
@@ -65,9 +70,23 @@ def loan_create(request):
 
 @login_required
 def loan_detail(request, pk):
-    loan = get_object_or_404(Loan.objects.select_related("customer", "loan_group", "loan_type", "interest_type"), pk=pk)
+    loan = get_object_or_404(
+        Loan.objects.select_related(
+            "customer", "loan_group", "loan_type", "interest_type", "assigned_staff"
+        ),
+        pk=pk,
+    )
     installments = loan.installments.all()
-    return render(request, "loans/loan_detail.html", {"loan": loan, "installments": installments})
+    assignment_form = StaffAssignmentForm(initial={"staff": loan.assigned_staff_id})
+    return render(
+        request,
+        "loans/loan_detail.html",
+        {
+            "loan": loan,
+            "installments": installments,
+            "assignment_form": assignment_form,
+        },
+    )
 
 
 @login_required

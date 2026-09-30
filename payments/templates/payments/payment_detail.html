@@ -14,6 +14,8 @@
 <div class="card">
   <div class="form-grid">
     <div><strong>Amount Paid:</strong> ₹{{ payment.amount_paid }}</div>
+    <div><strong>Payment Mode:</strong> {{ payment.get_payment_mode_display }}</div>
+    {% if payment.payment_mode == "online" %}<div><strong>Transaction ID:</strong> {{ payment.transaction_id }}</div>{% endif %}
     {% if payment.previous_amount %}<div><strong>Previous Amount:</strong> ₹{{ payment.previous_amount }} <span class="muted">(edited {{ payment.edited_at }})</span></div>{% endif %}
     {% if payment.unallocated_amount > 0 %}<div><strong>Unapplied:</strong> ₹{{ payment.unallocated_amount }} <span class="muted">(loan had no remaining balance)</span></div>{% endif %}
   </div>
