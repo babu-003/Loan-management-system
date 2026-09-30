@@ -10,7 +10,8 @@ class PaymentForm(forms.ModelForm):
         model = Payment
         fields = ["loan", "payment_date", "payment_mode", "transaction_id", "amount_paid", "remarks"]
         widgets = {
-            "payment_date": forms.DateInput(attrs={"type": "date"}),
+            "payment_date": forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31"}),
             "payment_mode": forms.Select(),
             "transaction_id": forms.TextInput(attrs={"placeholder": "Enter transaction ID"}),
             "remarks": forms.Textarea(attrs={"rows": 2}),
@@ -49,7 +50,8 @@ class PaymentEditForm(forms.ModelForm):
         model = Payment
         fields = ["payment_date", "payment_mode", "transaction_id", "amount_paid", "remarks"]
         widgets = {
-            "payment_date": forms.DateInput(attrs={"type": "date"}),
+            "payment_date": forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31"}),
             "payment_mode": forms.Select(),
             "transaction_id": forms.TextInput(attrs={"placeholder": "Enter transaction ID"}),
             "remarks": forms.Textarea(attrs={"rows": 2}),
@@ -80,5 +82,7 @@ class PaymentEditForm(forms.ModelForm):
 
 class PaymentSearchForm(forms.Form):
     q = forms.CharField(required=False, label="Search (Receipt No. / Loan No. / Customer)")
-    date_from = forms.DateField(required=False, widget=forms.DateInput(attrs={"type": "date"}))
-    date_to = forms.DateField(required=False, widget=forms.DateInput(attrs={"type": "date"}))
+    date_from = forms.DateField(required=False, widget=forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31"}))
+    date_to = forms.DateField(required=False, widget=forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31"}))

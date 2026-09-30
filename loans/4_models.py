@@ -172,10 +172,6 @@ class Loan(models.Model):
         "staff.Staff", on_delete=models.SET_NULL, null=True, blank=True, related_name="loans",
         help_text="Staff member responsible for collecting this loan.",
     )
-    penalty_per_day = models.DecimalField(
-        max_digits=10, decimal_places=2, default=Decimal("0.00"),
-        help_text="Penalty charged for each day an installment remains overdue.",
-    )
     loan_group = models.ForeignKey(
         LoanGroup, on_delete=models.SET_NULL, null=True, blank=True, related_name="loans"
     )
@@ -350,13 +346,7 @@ class Loan(models.Model):
 
     @property
     def total_outstanding(self):
-        # Dynamic outstanding includes any penalty that has accrued on
-        # currently overdue installments. The scheduled total_payable
-        # remains unchanged because penalties are conditional charges.
-        return sum(
-            (installment.balance_amount for installment in self.installments.all()),
-            Decimal("0"),
-        )
+        return self.total_payable - self.total_paid
 
 
 class Installment(models.Model):
@@ -390,31 +380,9 @@ class Installment(models.Model):
     def __str__(self):
         return f"{self.loan.loan_number} — Installment {self.installment_number}"
 
-    def penalty_amount(self, as_of_date=None):
-        """Current penalty for this installment. Penalty starts the day
-        after the due date and is charged per overdue day. A paid
-        installment stops accruing penalty."""
-        from django.utils import timezone
-
-        if self.status == self.STATUS_PAID:
-            return Decimal("0.00")
-        if as_of_date is None:
-            as_of_date = timezone.localdate()
-        if as_of_date <= self.due_date:
-            return Decimal("0.00")
-        overdue_days = (as_of_date - self.due_date).days
-        return (self.loan.penalty_per_day * overdue_days).quantize(Decimal("0.01"))
-
-    def total_due_amount(self, as_of_date=None):
-        return self.due_amount + self.penalty_amount(as_of_date)
-
-    def balance_amount_as_of(self, as_of_date=None):
-        balance = self.total_due_amount(as_of_date) - self.paid_amount
-        return max(balance, Decimal("0.00"))
-
     @property
     def balance_amount(self):
-        return self.balance_amount_as_of()
+        return self.due_amount - self.paid_amount
 
     @property
     def is_overdue(self):

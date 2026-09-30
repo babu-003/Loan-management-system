@@ -24,10 +24,14 @@ def dashboard(request):
     today = timezone.localdate()
 
     active_loans = Loan.objects.filter(status=Loan.STATUS_ACTIVE)
-    total_outstanding = sum((loan.total_outstanding for loan in active_loans), 0)
+    total_payable_active = _decimal_sum(active_loans, "total_payable")
+    total_paid_active = _decimal_sum(
+        Installment.objects.filter(loan__status=Loan.STATUS_ACTIVE), "paid_amount"
+    )
+    total_outstanding = total_payable_active - total_paid_active
 
     overdue_qs = Installment.objects.filter(due_date__lt=today).exclude(status=Installment.STATUS_PAID)
-    overdue_amount = sum((installment.balance_amount for installment in overdue_qs), 0)
+    overdue_amount = _decimal_sum(overdue_qs, F("due_amount") - F("paid_amount"))
 
     upcoming_qs = Installment.objects.filter(
         due_date__gte=today, due_date__lte=today + timezone.timedelta(days=7)

@@ -11,7 +11,8 @@ class StaffForm(forms.ModelForm):
             "address", "status", "notes",
         ]
         widgets = {
-            "joining_date": forms.DateInput(attrs={"type": "date"}),
+            "joining_date": forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31"}),
             "address": forms.Textarea(attrs={"rows": 3}),
             "notes": forms.Textarea(attrs={"rows": 3}),
         }

@@ -54,7 +54,8 @@ class PersonalDetailsForm(forms.ModelForm):
     }
 
         widgets = {
-            "date_of_birth": forms.DateInput(attrs={"type": "date"}),
+            "date_of_birth": forms.DateInput(attrs={"type": "date","min": "1900-01-01",
+            "max": "9999-12-31"}),
         }
 
     def __init__(self, *args, **kwargs):

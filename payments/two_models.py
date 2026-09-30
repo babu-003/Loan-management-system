@@ -74,10 +74,10 @@ class PaymentAllocation(models.Model):
         return f"{self.payment.receipt_number} → Installment {self.installment.installment_number}: ₹{self.amount_allocated}"
 
 
-def _recompute_installment_status(installment, as_of_date=None):
+def _recompute_installment_status(installment):
     if installment.paid_amount <= 0:
         installment.status = Installment.STATUS_PENDING
-    elif installment.paid_amount < installment.total_due_amount(as_of_date):
+    elif installment.paid_amount < installment.due_amount:
         installment.status = Installment.STATUS_PARTIALLY_PAID
     else:
         installment.status = Installment.STATUS_PAID
@@ -112,10 +112,7 @@ def allocate_payment(payment):
     for installment in installments:
         if remaining <= 0:
             break
-        # Use the payment date for penalty calculation so the customer is
-        # charged only for the days the installment was actually overdue
-        # when the payment was made.
-        balance = installment.balance_amount_as_of(payment.payment_date)
+        balance = installment.balance_amount
         if balance <= 0:
             continue
         applied = min(remaining, balance)

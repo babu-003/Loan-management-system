@@ -31,9 +31,4 @@ class LoanAdmin(admin.ModelAdmin):
     list_filter = ("status", "loan_type", "repayment_frequency")
     search_fields = ("loan_number", "customer__full_name", "customer__customer_id")
     readonly_fields = ("loan_number", "total_interest", "total_payable")
-    fieldsets = (
-        (None, {"fields": ("loan_number", "customer", "assigned_staff", "loan_group", "loan_type", "interest_type")}),
-        ("Loan Terms", {"fields": ("principal_amount", "interest_rate", "penalty_per_day", "start_date", "repayment_frequency", "custom_interval_days", "number_of_installments", "first_due_date", "purpose", "remarks", "status")}),
-        ("Calculated", {"fields": ("total_interest", "total_payable", "closing_date", "closing_remarks")}),
-    )
     inlines = [InstallmentInline]

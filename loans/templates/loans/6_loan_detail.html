@@ -45,7 +45,7 @@
 <div class="card">
   <h3>Installment Schedule</h3>
   <table>
-    <thead><tr><th>#</th><th>Due Date</th><th>Principal</th><th>Interest</th><th>Amount</th><th>Penalty</th><th>Total Due</th><th>Paid</th><th>Balance</th><th>Status</th><th></th></tr></thead>
+    <thead><tr><th>#</th><th>Due Date</th><th>Principal</th><th>Interest</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Status</th><th></th></tr></thead>
     <tbody>
       {% for inst in installments %}
         <tr>
@@ -54,8 +54,6 @@
           <td>₹{{ inst.principal_component }}</td>
           <td>₹{{ inst.interest_component }}</td>
           <td>₹{{ inst.due_amount }}</td>
-          <td>₹{{ inst.penalty_amount }}</td>
-          <td>₹{{ inst.total_due_amount }}</td>
           <td>₹{{ inst.paid_amount }}</td>
           <td>₹{{ inst.balance_amount }}</td>
           <td><span class="badge {% if inst.is_overdue %}overdue{% else %}{{ inst.status }}{% endif %}">{% if inst.is_overdue %}Overdue{% else %}{{ inst.get_status_display }}{% endif %}</span></td>
